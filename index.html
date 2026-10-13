@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 นักออกแบบน้อย แก้ปัญหาเก่ง (ป.1)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #d1fae5 100%);
+            min-height: 100vh;
+            user-select: none;
+        }
+        /* Custom Bounce and Animation Effects */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: float 2.5s ease-in-out infinite;
+        }
+        @keyframes pulse-custom {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .animate-pulse-custom {
+            animation: pulse-custom 1.5s ease-in-out infinite;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-700 flex flex-col min-h-screen">
+
+    <!-- Custom Toast Notification -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- 1. แถบสถานะด้านบน (Header / Status Bar) -->
+    <header class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-40 px-4 py-3 border-b border-indigo-100">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="goToHome()">
+                <div class="w-10 h-10 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-md animate-bounce">
+                    <i class="fa-solid fa-robot text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base md:text-lg text-indigo-600 leading-tight">นักออกแบบน้อย แก้ปัญหาเก่ง</h1>
+                    <span class="text-xs text-slate-500 bg-indigo-50 px-2 py-0.5 rounded-full font-medium">วิชาวิทยาการคำนวณ ป.1</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <!-- ระบบสะสมดาว -->
+                <div class="bg-amber-100 border border-amber-300 px-3 py-1.5 rounded-full flex items-center space-x-1.5 shadow-sm">
+                    <span class="text-xl">⭐</span>
+                    <span id="star-display" class="font-bold text-amber-700 text-base">0</span>
+                </div>
+                <!-- ปุ่มเปิด/ปิดเสียง -->
+                <button id="sound-toggle-btn" onclick="toggleSound()" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 active:scale-95 rounded-full flex items-center justify-center text-slate-600 transition shadow-sm" title="เปิด/ปิดเสียง">
+                    <i id="sound-icon" class="fa-solid fa-volume-high text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
+
+        <!-- 2. หน้าหลัก (Home Screen) -->
+        <div id="screen-home" class="screen-view transition-all duration-300">
+            <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-xl border-4 border-indigo-200 text-center relative overflow-hidden">
+                <!-- Decorative background elements -->
+                <div class="absolute -top-10 -left-10 w-32 h-32 bg-sky-200 rounded-full blur-2xl opacity-50 pointer-events-none"></div>
+                <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-amber-200 rounded-full blur-2xl opacity-50 pointer-events-none"></div>
+
+                <div class="inline-block bg-sky-100 text-sky-700 font-semibold px-4 py-1.5 rounded-full text-sm mb-4 border border-sky-200">
+                    📘 วิทยาการคำนวณ & เทคโนโลยี ป.1
+                </div>
+
+                <h2 class="text-2xl md:text-4xl font-bold text-slate-800 mb-3">
+                    มาเรียนรู้การออกแบบแก้ปัญหาเบื้องต้นกันเถอะ! 🚀
+                </h2>
+                <p class="text-slate-600 text-sm md:text-base max-w-xl mx-auto mb-8">
+                    ฝึกคิดอย่างเป็นขั้นตอน มองหาปัญหา เลือกเครื่องมือ และพาน้องหุ่นยนต์ไปทำภารกิจสุดสนุกกันเถอะ!
+                </p>
+
+                <!-- 2 ตัวเลือกหลัก -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-lg mx-auto mb-8">
+                    <button onclick="startLesson(1)" class="group bg-gradient-to-br from-sky-400 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white p-5 rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition flex flex-col items-center border-b-4 border-blue-700">
+                        <span class="text-4xl mb-2 group-hover:scale-110 transition">📖</span>
+                        <span class="font-bold text-lg">เรียนรู้บทเรียน</span>
+                        <span class="text-xs text-sky-100 mt-1">ศึกษา 3 ขั้นตอนพื้นฐาน</span>
+                    </button>
+
+                    <button onclick="startMiniGameMenu()" class="group bg-gradient-to-br from-emerald-400 to-green-500 hover:from-emerald-500 hover:to-green-600 text-white p-5 rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition flex flex-col items-center border-b-4 border-green-700">
+                        <span class="text-4xl mb-2 group-hover:scale-110 transition">🎮</span>
+                        <span class="font-bold text-lg">ตะลุยเกมฝึกทักษะ</span>
+                        <span class="text-xs text-emerald-100 mt-1">4 ด่านสุดสนุก ท้าทายความคิด</span>
+                    </button>
+                </div>
+
+                <!-- การ์ดสรุปแนวคิด 3 หัวข้อ -->
+                <div class="border-t border-slate-200 pt-6">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">3 แนวคิดสำคัญในการแก้ปัญหา</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 text-center">
+                            <span class="text-2xl block mb-1">🔍</span>
+                            <h4 class="font-bold text-amber-800 text-sm">มองหาปัญหา</h4>
+                            <p class="text-xs text-slate-600 mt-0.5">สังเกตสิ่งผิดปกติรอบตัว</p>
+                        </div>
+                        <div class="bg-sky-50 border border-sky-200 rounded-2xl p-3 text-center">
+                            <span class="text-2xl block mb-1">📝</span>
+                            <h4 class="font-bold text-sky-800 text-sm">วางแผนแก้ปัญหา</h4>
+                            <p class="text-xs text-slate-600 mt-0.5">คิดลำดับก่อน-หลัง</p>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 text-center">
+                            <span class="text-2xl block mb-1">✅</span>
+                            <h4 class="font-bold text-emerald-800 text-sm">ตรวจทานผลลัพธ์</h4>
+                            <p class="text-xs text-slate-600 mt-0.5">ตรวจสอบว่าสำเร็จไหม</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 3. ส่วนบทเรียน (Interactive Lessons) -->
+        <div id="screen-lesson" class="screen-view hidden transition-all duration-300">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-xl border-4 border-sky-200">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="goToHome()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-semibold transition active:scale-95 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-arrow-left"></i><span>กลับหน้าหลัก</span>
+                    </button>
+                    <div id="lesson-indicator" class="bg-sky-100 text-sky-700 font-bold px-4 py-1.5 rounded-full text-sm">
+                        บทที่ 1 จาก 3
+                    </div>
+                </div>
+
+                <!-- Lesson Content Container -->
+                <div id="lesson-content-box" class="min-h-[280px] flex flex-col justify-center">
+                    <!-- Dynamic Lesson Rendered Here -->
+                </div>
+
+                <!-- Lesson Navigation Buttons -->
+                <div class="flex justify-between items-center mt-8 pt-4 border-t border-slate-100">
+                    <button id="lesson-prev-btn" onclick="prevLesson()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-5 py-2.5 rounded-xl transition active:scale-95 flex items-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-chevron-left"></i><span>ก่อนหน้า</span>
+                    </button>
+                    <button id="lesson-next-btn" onclick="nextLesson()" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition active:scale-95 flex items-center space-x-2">
+                        <span>ถัดไป</span><i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. เมนูเลือกมินิเกม -->
+        <div id="screen-game-menu" class="screen-view hidden transition-all duration-300">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-xl border-4 border-emerald-200 text-center">
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="goToHome()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-semibold transition active:scale-95 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-arrow-left"></i><span>กลับหน้าหลัก</span>
+                    </button>
+                    <h3 class="font-bold text-emerald-700 text-lg">🎮 เลือกด่านฝึกทักษะ</h3>
+                    <div class="w-20"></div>
+                </div>
+
+                <p class="text-slate-600 text-sm mb-6">เลือกด่านที่ต้องการเล่นเพื่อสะสมดาวและทดสอบความเข้าใจกันเลย!</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
+                    <!-- ด่าน 1 -->
+                    <button onclick="startStage(1)" class="bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white p-4 rounded-2xl shadow-md transition active:scale-95 flex items-center space-x-4 text-left border-b-4 border-orange-600">
+                        <span class="text-3xl bg-white/20 p-3 rounded-xl">🔍</span>
+                        <div>
+                            <h4 class="font-bold text-base">ด่านที่ 1: ค้นหาปัญหา</h4>
+                            <p class="text-xs text-amber-100">ฝึกสังเกตและระบุปัญหาจากสถานการณ์</p>
+                        </div>
+                    </button>
+
+                    <!-- ด่าน 2 -->
+                    <button onclick="startStage(2)" class="bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white p-4 rounded-2xl shadow-md transition active:scale-95 flex items-center space-x-4 text-left border-b-4 border-blue-700">
+                        <span class="text-3xl bg-white/20 p-3 rounded-xl">🔢</span>
+                        <div>
+                            <h4 class="font-bold text-base">ด่านที่ 2: เรียงลำดับขั้นตอน</h4>
+                            <p class="text-xs text-sky-100">จัดเรียงขั้นตอนก่อน-หลังให้ถูกต้อง</p>
+                        </div>
+                    </button>
+
+                    <!-- ด่าน 3 -->
+                    <button onclick="startStage(3)" class="bg-gradient-to-r from-purple-400 to-indigo-500 hover:from-purple-500 hover:to-indigo-600 text-white p-4 rounded-2xl shadow-md transition active:scale-95 flex items-center space-x-4 text-left border-b-4 border-indigo-700">
+                        <span class="text-3xl bg-white/20 p-3 rounded-xl">🛠️</span>
+                        <div>
+                            <h4 class="font-bold text-base">ด่านที่ 3: เลือกเครื่องมือ</h4>
+                            <p class="text-xs text-purple-100">เลือกอุปกรณ์แก้ไขปัญหาให้เหมาะสม</p>
+                        </div>
+                    </button>
+
+                    <!-- ด่าน 4 -->
+                    <button onclick="startStage(4)" class="bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-white p-4 rounded-2xl shadow-md transition active:scale-95 flex items-center space-x-4 text-left border-b-4 border-teal-700">
+                        <span class="text-3xl bg-white/20 p-3 rounded-xl">🤖</span>
+                        <div>
+                            <h4 class="font-bold text-base">ด่านที่ 4: พาหุ่นยนต์ไปแก้ปัญหา</h4>
+                            <p class="text-xs text-emerald-100">เขียนคำสั่งลูกศรนำทางหุ่นยนต์</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. หน้าจอเล่นมินิเกม (Mini Game Container) -->
+        <div id="screen-game-play" class="screen-view hidden transition-all duration-300">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-xl border-4 border-indigo-200">
+                <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+                    <button onclick="startMiniGameMenu()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-xl text-xs font-semibold transition active:scale-95 flex items-center space-x-1">
+                        <i class="fa-solid fa-arrow-left"></i><span>เลือกด่าน</span>
+                    </button>
+                    <div id="game-title-header" class="font-bold text-indigo-700 text-base md:text-lg">ด่านที่ 1: ค้นหาปัญหา</div>
+                    <div id="game-progress-indicator" class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded-full text-xs">
+                        ข้อ 1/3
+                    </div>
+                </div>
+
+                <!-- Game Dynamic Box -->
+                <div id="game-arena" class="min-h-[300px] flex flex-col justify-center">
+                    <!-- Rendered by JavaScript based on active stage -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. หน้าสรุปผล & เกียรติบัตร (Summary & Certificate) -->
+        <div id="screen-summary" class="screen-view hidden transition-all duration-300">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-xl border-4 border-amber-300 text-center">
+                <div class="inline-block bg-amber-100 text-amber-700 font-bold px-4 py-1.5 rounded-full text-sm mb-3">
+                    🎉 ยินดีด้วยครับ/ค่ะ!
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">ผ่านภารกิจนักออกแบบน้อยแล้ว!</h2>
+                <p class="text-slate-600 text-sm mb-6">คุณมีความสามารถในการออกแบบและแก้ปัญหาได้ยอดเยี่ยมมากๆ</p>
+
+                <!-- ถ้วยรางวัลและคะแนนดาวรวม -->
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-6 max-w-sm mx-auto mb-6 shadow-sm">
+                    <div class="text-5xl mb-2 animate-bounce">🏆</div>
+                    <div class="text-slate-500 text-xs font-medium">ดาวสะสมทั้งหมดของคุณ</div>
+                    <div id="final-star-count" class="text-3xl font-bold text-amber-600 mt-1">⭐ 0 ดาว</div>
+                </div>
+
+                <!-- ช่องพิมพ์ชื่อเกียรติบัตร -->
+                <div class="max-w-md mx-auto mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <label class="block text-slate-700 font-semibold text-sm mb-2 text-left">พิมพ์ชื่อ-นามสกุล สำหรับรับเกียรติบัตร:</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="student-name-input" placeholder="เช่น ด.ช. รักเรียน เพียรศึกษา" class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white">
+                        <button onclick="generateCertificate()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md transition active:scale-95 text-sm flex items-center space-x-1.5 whitespace-nowrap">
+                            <i class="fa-solid fa-award"></i><span>สร้างเกียรติบัตร</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex justify-center space-x-3">
+                    <button onclick="goToHome()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-xl transition active:scale-95 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-house"></i><span>กลับหน้าหลัก</span>
+                    </button>
+                    <button onclick="restartAll()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition active:scale-95 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-rotate-right"></i><span>เล่นใหม่อีกครั้ง</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal เกียรติบัตร (Hidden by default) -->
+        <div id="certificate-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl border-8 border-amber-200 relative overflow-hidden animate-float">
+                <!-- Close Button -->
+                <button onclick="closeCertificate()" class="absolute top-4 right-4 w-9 h-9 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+
+                <!-- Certificate Content -->
+                <div class="border-4 border-dashed border-amber-300 p-6 rounded-2xl text-center bg-gradient-to-b from-amber-50/50 to-white">
+                    <div class="text-3xl mb-1">🌟📜🌟</div>
+                    <h4 class="text-xs font-bold text-amber-600 tracking-widest uppercase mb-1">ประกาศนียบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า</h4>
+                    <h3 class="text-2xl md:text-3xl font-bold text-indigo-700 my-3 font-serif" id="cert-student-name">ด.ช. นักเรียน ตัวอย่าง</h3>
+                    <p class="text-slate-600 text-xs md:text-sm max-w-md mx-auto mb-4">
+                        ได้ผ่านการเรียนรู้และทำกิจกรรมฝึกทักษะวิชาวิทยาการคำนวณ เรื่อง <strong>"การออกแบบแก้ปัญหาเบื้องต้น"</strong> ระดับชั้นประถมศึกษาปีที่ 1 อย่างยอดเยี่ยม
+                    </p>
+                    <div class="flex justify-around items-center text-xs text-slate-500 border-t border-amber-200 pt-4 mt-4">
+                        <div>
+                            <p class="font-bold text-amber-700 text-sm">⭐ สะสมดาว</p>
+                            <span id="cert-star-count" class="font-bold text-slate-700">12 ดาว</span>
+                        </div>
+                        <div>
+                            <div class="w-16 h-8 border-b border-slate-400 mb-1 flex items-end justify-center pb-0.5">
+                                <span class="text-indigo-600 font-semibold text-[10px]">ครูผู้สอน</span>
+                            </div>
+                            <p class="text-[10px]">ผู้มอบเกียรติบัตร</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-center space-x-3">
+                    <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md transition text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-print"></i><span>พิมพ์เกียรติบัตร</span>
+                    </button>
+                    <button onclick="closeCertificate()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-5 py-2.5 rounded-xl transition text-sm">
+                        ปิดหน้าต่าง
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center py-4 text-xs text-slate-400">
+        สื่อการเรียนรู้อินเทอร์แอคทีฟ วิชาวิทยาการคำนวณ ป.1 © 2026
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Global Game State
+        let state = {
+            stars: 0,
+            soundEnabled: true,
+            currentLesson: 1,
+            activeStage: 1,
+            stageQuestionIndex: 0,
+            // Stage 2 state
+            stage2Selected: [],
+            // Stage 4 state (Robot Coding)
+            robotPos: { r: 0, c: 0 },
+            robotGoal: { r: 2, c: 2 },
+            robotTrash: { r: 1, c: 1 },
+            robotCommands: [],
+            robotRunning: false
+        };
+
+        // Web Audio API Synthesizer Helper
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!state.soundEnabled) return;
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(150, now + 0.15);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'win') {
+                    const notes = [523.25, 587.33, 659.25, 698.46, 783.99];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.type = 'sine';
+                        o.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        g.gain.setValueAtTime(0.1, now + idx * 0.08);
+                        g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.15);
+                        o.start(now + idx * 0.08);
+                        o.stop(now + idx * 0.08 + 0.15);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked", e);
+            }
+        }
+
+        function toggleSound() {
+            state.soundEnabled = !state.soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (state.soundEnabled) {
+                icon.className = "fa-solid fa-volume-high text-lg";
+                showToast("เปิดเสียงแล้ว 🔊", "info");
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-lg";
+                showToast("ปิดเสียงแล้ว 🔇", "info");
+            }
+        }
+
+        // Custom Toast Notification System
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = "bg-emerald-500 text-white";
+            let icon = "fa-circle-check";
+            if (type === 'error') {
+                bgClass = "bg-rose-500 text-white";
+                icon = "fa-circle-xmark";
+            } else if (type === 'info') {
+                bgClass = "bg-sky-500 text-white";
+                icon = "fa-circle-info";
+            }
+
+            toast.className = `${bgClass} px-4 py-3 rounded-2xl shadow-lg flex items-center space-x-2 text-sm font-semibold pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Screen Navigation
+        function hideAllScreens() {
+            document.querySelectorAll('.screen-view').forEach(el => el.classList.add('hidden'));
+        }
+
+        function goToHome() {
+            playSound('click');
+            hideAllScreens();
+            document.getElementById('screen-home').classList.remove('hidden');
+        }
+
+        function updateStarDisplay() {
+            document.getElementById('star-display').innerText = state.stars;
+        }
+
+        // Lessons Data & Functions
+        const lessonsData = [
+            {
+                title: "บทที่ 1: ปัญหาคืออะไร? 🤔",
+                content: `
+                    <div class="text-center">
+                        <div class="text-6xl mb-4 animate-float">☔</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">ปัญหา คือ สิ่งที่ทำให้เราลำบาก ไม่สะดวก หรือเกิดอันตราย</h3>
+                        <p class="text-slate-600 text-sm max-w-md mx-auto mb-6">
+                            เช่น ตอนเช้าจะเดินไปโรงเรียนแต่ฝนตกหนัก หรือรองเท้าผ้าใบหลุดระหว่างทางเดิน ทำให้สะดุดล้มได้
+                        </p>
+                        <div class="bg-sky-50 border border-sky-200 p-4 rounded-2xl text-left max-w-md mx-auto flex items-center space-x-3">
+                            <span class="text-3xl">💡</span>
+                            <p class="text-xs text-sky-900"><strong>ข้อสังเกต:</strong> เมื่อเกิดปัญหา เราต้องตั้งสติและหาวิธีแก้ไข ไม่ควรปล่อยไว้เฉยๆ ครับ</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "บทที่ 2: 3 ขั้นตอนการแก้ปัญหา 🛠️",
+                content: `
+                    <div class="text-center">
+                        <div class="text-5xl mb-3 animate-float">📝</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">การแก้ปัญหาอย่างเป็นขั้นตอน มี 3 ขั้นตอนง่ายๆ ดังนี้:</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left max-w-lg mx-auto">
+                            <div class="bg-amber-50 border border-amber-200 p-3 rounded-2xl">
+                                <span class="text-2xl block mb-1">1️⃣</span>
+                                <h4 class="font-bold text-amber-800 text-sm">มองหาปัญหา</h4>
+                                <p class="text-xs text-slate-600">สำรวจว่าเกิดอะไรขึ้น และปัญหาคืออะไร</p>
+                            </div>
+                            <div class="bg-sky-50 border border-sky-200 p-3 rounded-2xl">
+                                <span class="text-2xl block mb-1">2️⃣</span>
+                                <h4 class="font-bold text-sky-800 text-sm">วางแผนแก้ปัญหา</h4>
+                                <p class="text-xs text-slate-600">คิดวิธีแก้และเรียงลำดับก่อน-หลัง</p>
+                            </div>
+                            <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-2xl">
+                                <span class="text-2xl block mb-1">3️⃣</span>
+                                <h4 class="font-bold text-emerald-800 text-sm">ลงมือทำและตรวจทาน</h4>
+                                <p class="text-xs text-slate-600">ปฏิบัติตามแผนและเช็คผลลัพธ์</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "บทที่ 3: การเรียงลำดับขั้นตอน (Algorithm) 🐾",
+                content: `
+                    <div class="text-center">
+                        <div class="text-6xl mb-4 animate-float">🦷</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">การทำสิ่งต่างๆ ต้องมีลำดับก่อน-หลัง (Algorithm)</h3>
+                        <p class="text-slate-600 text-sm max-w-md mx-auto mb-6">
+                            ตัวอย่างเช่น การแปรงฟัน เราไม่สามารถบ้วนน้ำก่อนบีบยาสีฟันได้ ต้องทำตามลำดับที่ถูกต้องจึงจะสำเร็จ
+                        </p>
+                        <div class="flex justify-center items-center space-x-2 text-xs font-semibold text-slate-700">
+                            <span class="bg-purple-100 border border-purple-200 px-3 py-2 rounded-xl">1. บีบยาสีฟัน 🧴</span>
+                            <span>➔</span>
+                            <span class="bg-purple-100 border border-purple-200 px-3 py-2 rounded-xl">2. แปรงฟัน 🦷</span>
+                            <span>➔</span>
+                            <span class="bg-purple-100 border border-purple-200 px-3 py-2 rounded-xl">3. บ้วนน้ำ 🚰</span>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        function startLesson(num) {
+            playSound('click');
+            state.currentLesson = num;
+            hideAllScreens();
+            document.getElementById('screen-lesson').classList.remove('hidden');
+            renderLesson();
+        }
+
+        function renderLesson() {
+            const lesson = lessonsData[state.currentLesson - 1];
+            document.getElementById('lesson-indicator').innerText = `บทที่ ${state.currentLesson} จาก 3`;
+            document.getElementById('lesson-content-box').innerHTML = lesson.content;
+
+            const prevBtn = document.getElementById('lesson-prev-btn');
+            const nextBtn = document.getElementById('lesson-next-btn');
+
+            prevBtn.disabled = state.currentLesson === 1;
+            if (state.currentLesson === 3) {
+                nextBtn.innerHTML = `<span>จบการเรียนรู้</span><i class="fa-solid fa-check"></i>`;
+                nextBtn.className = "bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition active:scale-95 flex items-center space-x-2";
+            } else {
+                nextBtn.innerHTML = `<span>ถัดไป</span><i class="fa-solid fa-chevron-right"></i>`;
+                nextBtn.className = "bg-sky-500 hover:bg-sky-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition active:scale-95 flex items-center space-x-2";
+            }
+        }
+
+        function nextLesson() {
+            playSound('click');
+            if (state.currentLesson < 3) {
+                state.currentLesson++;
+                renderLesson();
+            } else {
+                showToast("เรียนจบบทเรียนแล้ว รับไปเลย 3 ดาว! ⭐", "success");
+                state.stars += 3;
+                updateStarDisplay();
+                startMiniGameMenu();
+            }
+        }
+
+        function prevLesson() {
+            playSound('click');
+            if (state.currentLesson > 1) {
+                state.currentLesson--;
+                renderLesson();
+            }
+        }
+
+        function startMiniGameMenu() {
+            playSound('click');
+            hideAllScreens();
+            document.getElementById('screen-game-menu').classList.remove('hidden');
+        }
+
+        // Mini Game Data & Engine
+        const stage1Questions = [
+            {
+                scenario: "🌧️ น้องส้มกำลังจะเดินกลับบ้านหลังเลิกเรียน แต่จู่ๆ ท้องฟ้ามืดครึ้มและมีฝนตกลงมาอย่างหนักจนเปียกปอน",
+                question: "อะไรคือ 'ปัญหา' ในสถานการณ์นี้?",
+                options: [
+                    { text: "ฝนตกหนักทำให้เปียกปอน", correct: true },
+                    { text: "น้องส้มชอบกินไอศกรีม", correct: false },
+                    { text: "โรงเรียนมีสนามเด็กเล่นกว้าง", correct: false }
+                ]
+            },
+            {
+                scenario: "👟 น้องวินกำลังวิ่งเล่นสนามหญ้าที่โรงเรียน จู่ๆ ก็รู้สึกสะดุดและเกือบล้มลงเพราะเชือกรองเท้าหลุดกองอยู่ที่พื้น",
+                question: "อะไรคือ 'ปัญหา' ในสถานการณ์นี้?",
+                options: [
+                    { text: "สนามหญ้ามีสีเขียวสวยงาม", correct: false },
+                    { text: "เชือกรองเท้าหลุดทำให้เสี่ยงสะดุดล้ม", correct: true },
+                    { text: "น้องวินใส่เสื้อผ้าสะอาด", correct: false }
+                ]
+            },
+            {
+                scenario: "✏️ น้องแก้วกำลังจะวาดรูปส่งคุณครู แต่หาดินสอในกระเป๋าเท่าไหร่ก็หาไม่เจอ ทำให้วาดรูปต่อไม่ได้",
+                question: "อะไรคือ 'ปัญหา' ในสถานการณ์นี้?",
+                options: [
+                    { text: "กระเป๋านักเรียนมีสีชมพู", correct: false },
+                    { text: "กระดาษวาดรูปแผ่นใหญ่มาก", correct: false },
+                    { text: "หาดินสอไม่พบ ทำให้ทำงานต่อไม่ได้", correct: true }
+                ]
+            }
+        ];
+
+        const stage2Questions = [
+            {
+                title: "เรียงลำดับขั้นตอนการ 'แปรงฟัน' ให้ถูกต้อง 🦷",
+                steps: [
+                    { id: 1, text: "บีบยาสีฟันใส่แปรง 🧴", order: 1 },
+                    { id: 2, text: "แปรงฟันให้ทั่วทุกซี่ 🦷", order: 2 },
+                    { id: 3, text: "บ้วนน้ำสะอาด 🚰", order: 3 }
+                ]
+            },
+            {
+                title: "เรียงลำดับขั้นตอนการ 'ล้างมือให้สะอาด' 🧼",
+                steps: [
+                    { id: 1, text: "ฟอกสบู่ที่มือ 🧼", order: 2 },
+                    { id: 2, text: "เปิดก๊อกน้ำล้างมือ 🚰", order: 1 },
+                    { id: 3, text: "เช็ดมือให้แห้งด้วยผ้าเช็ดมือ 🧺", order: 3 }
+                ]
+            },
+            {
+                title: "เรียงลำดับขั้นตอนการ 'ปลูกต้นไม้' 🌱",
+                steps: [
+                    { id: 1, text: "รดน้ำต้นไม้ให้ชุ่มชื้น 💧", order: 3 },
+                    { id: 2, text: "ขุดหลุมดินเล็กน้อย 🕳️", order: 1 },
+                    { id: 3, text: "นำต้นกล้าลงปลูกในหลุม 🌱", order: 2 }
+                ]
+            }
+        ];
+
+        const stage3Questions = [
+            {
+                scenario: "🥤 น้องปอนด์ทำแก้วน้ำหวานหกเลอะเปื้อนพื้นห้องเรียนเหนียวหนืด",
+                question: "ควรเลือกเครื่องมือใดในการแก้ปัญหา?",
+                options: [
+                    { text: "ไม้กวาดหยากไย่", correct: false, icon: "🧹" },
+                    { text: "ผ้าเช็ดพื้น / ผ้าขี้ริ้ว", correct: true, icon: "🧽" },
+                    { text: "กรรไกรตัดกระดาษ", correct: false, icon: "✂️" }
+                ]
+            },
+            {
+                scenario: "🍂 มีใบไม้แห้งร่วงหล่นกระจายเต็มสนามหญ้าหน้าบ้าน",
+                question: "ควรเลือกเครื่องมือใดในการทำความสะอาด?",
+                options: [
+                    { text: "ไม้กวาดทางมะพร้าว / ไม้กวาดใบไม้", correct: true, icon: "🧹" },
+                    { text: "ช้อนส้อมทานอาหาร", correct: false, icon: "🥄" },
+                    { text: "ยางลบดินสอ", correct: false, icon: "✏️" }
+                ]
+            },
+            {
+                scenario: "✏️ ดินสอของน้องโบว์ทู่จนเขียนหนังสือไม่ได้แล้ว",
+                question: "ควรเลือกเครื่องมือใดในการแก้ปัญหา?",
+                    options: [
+                    { text: "ค้อนตอกตะปู", correct: false, icon: "🔨" },
+                    { text: "กรรไกรตัดผ้า", correct: false, icon: "✂️" },
+                    { text: "กบเหลาดินสอ", correct: true, icon: "✏️" }
+                ]
+            }
+        ];
+
+        function startStage(stageNum) {
+            playSound('click');
+            state.activeStage = stageNum;
+            state.stageQuestionIndex = 0;
+            state.stage2Selected = [];
+            
+            if (stageNum === 4) {
+                initRobotStage();
+            }
+
+            hideAllScreens();
+            document.getElementById('screen-game-play').classList.remove('hidden');
+            renderStageContent();
+        }
+
+        function renderStageContent() {
+            const titles = [
+                "",
+                "ด่านที่ 1: ค้นหาปัญหา 🔍",
+                "ด่านที่ 2: เรียงลำดับขั้นตอน 🔢",
+                "ด่านที่ 3: เลือกเครื่องมือแก้ปัญหา 🛠️",
+                "ด่านที่ 4: พาหุ่นยนต์ไปแก้ปัญหา 🤖"
+            ];
+            document.getElementById('game-title-header').innerText = titles[state.activeStage];
+
+            if (state.activeStage === 1) renderStage1();
+            else if (state.activeStage === 2) renderStage2();
+            else if (state.activeStage === 3) renderStage3();
+            else if (state.activeStage === 4) renderStage4();
+        }
+
+        function renderStage1() {
+            const qIdx = state.stageQuestionIndex;
+            if (qIdx >= stage1Questions.length) {
+                stageCompleted();
+                return;
+            }
+
+            document.getElementById('game-progress-indicator').innerText = `ข้อ ${qIdx + 1}/3`;
+            const q = stage1Questions[qIdx];
+
+            // Shuffle options for interactivity
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+            let html = `
+                <div class="text-center mb-6">
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl text-slate-700 text-sm md:text-base font-medium max-w-xl mx-auto shadow-sm mb-4">
+                        ${q.scenario}
+                    </div>
+                    <h4 class="font-bold text-indigo-700 text-base md:text-lg">${q.question}</h4>
+                </div>
+                <div class="space-y-3 max-w-md mx-auto">
+            `;
+
+            shuffledOptions.forEach((opt, idx) => {
+                html += `
+                    <button onclick="checkStage1Answer(${opt.correct})" class="w-full bg-white hover:bg-sky-50 border-2 border-slate-200 hover:border-sky-400 p-4 rounded-2xl text-slate-700 font-semibold shadow-sm transition active:scale-95 text-left flex items-center justify-between group">
+                        <span>${opt.text}</span>
+                        <span class="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-sky-100 flex items-center justify-center text-slate-500 group-hover:text-sky-600 transition">👉</span>
+                    </button>
+                `;
+            });
+
+            html += `</div>`;
+            document.getElementById('game-arena').innerHTML = html;
+        }
+
+        function checkStage1Answer(isCorrect) {
+            if (isCorrect) {
+                playSound('correct');
+                showToast("ถูกต้องเก่งมาก! (+1 ดาว) ⭐", "success");
+                state.stars += 1;
+                updateStarDisplay();
+                state.stageQuestionIndex++;
+                setTimeout(renderStage1, 600);
+            } else {
+                playSound('wrong');
+                showToast("ยังไม่ถูกต้อง ลองคิดดูใหม่อีกครั้งนะ ❌", "error");
+            }
+        }
+
+        function renderStage2() {
+            const qIdx = state.stageQuestionIndex;
+            if (qIdx >= stage2Questions.length) {
+                stageCompleted();
+                return;
+            }
+
+            document.getElementById('game-progress-indicator').innerText = `ข้อ ${qIdx + 1}/3`;
+            const q = stage2Questions[qIdx];
+
+            // Unselected shuffled buttons
+            let availableSteps = [...q.steps].filter(s => !state.stage2Selected.includes(s.id));
+            availableSteps.sort(() => Math.random() - 0.5);
+
+            let html = `
+                <div class="text-center mb-4">
+                    <h4 class="font-bold text-indigo-700 text-base md:text-lg mb-2">${q.title}</h4>
+                    <p class="text-slate-500 text-xs">คลิกเลือกขั้นตอนเรียงตามลำดับ 1 ➔ 2 ➔ 3</p>
+                </div>
+
+                <!-- Slot Container -->
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-3 mb-6">
+            `;
+
+            for (let i = 1; i <= 3; i++) {
+                const selectedStepId = state.stage2Selected[i - 1];
+                const stepObj = q.steps.find(s => s.id === selectedStepId);
+
+                html += `
+                    <div class="w-full sm:w-36 h-20 border-2 border-dashed ${stepObj ? 'border-emerald-400 bg-emerald-50' : 'border-slate-300 bg-slate-50'} rounded-2xl flex flex-col items-center justify-center p-2 text-center shadow-inner">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">ขั้นที่ ${i}</span>
+                        <span class="text-xs font-semibold text-slate-700 mt-1">${stepObj ? stepObj.text : 'ว่าง'}</span>
+                    </div>
+                `;
+            }
+
+            html += `
+                </div>
+                <div class="flex justify-center space-x-2 mb-4">
+                    <button onclick="resetStage2Selection()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold px-4 py-2 rounded-xl transition active:scale-95">
+                        <i class="fa-solid fa-rotate-left mr-1"></i>ล้างลำดับ
+                    </button>
+                </div>
+                <!-- Available Choice Buttons -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-lg mx-auto">
+            `;
+
+            availableSteps.forEach(step => {
+                html += `
+                    <button onclick="selectStage2Step(${step.id})" class="bg-white hover:bg-sky-50 border-2 border-sky-200 hover:border-sky-400 p-3 rounded-2xl text-slate-700 text-xs font-semibold shadow-sm transition active:scale-95 flex flex-col items-center justify-center text-center">
+                        <span class="text-lg mb-1">👆</span>
+                        <span>${step.text}</span>
+                    </button>
+                `;
+            });
+
+            html += `</div>`;
+            document.getElementById('game-arena').innerHTML = html;
+        }
+
+        function selectStage2Step(stepId) {
+            playSound('click');
+            state.stage2Selected.push(stepId);
+
+            const q = stage2Questions[state.stageQuestionIndex];
+            if (state.stage2Selected.length === 3) {
+                // Check correctness
+                let isCorrect = true;
+                for (let i = 0; i < 3; i++) {
+                    const step = q.steps.find(s => s.id === state.stage2Selected[i]);
+                    if (step.order !== i + 1) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+
+                if (isCorrect) {
+                    playSound('correct');
+                    showToast("เรียงลำดับถูกต้อง เก่งมาก! (+1 ดาว) ⭐", "success");
+                    state.stars += 1;
+                    updateStarDisplay();
+                    state.stage2Selected = [];
+                    state.stageQuestionIndex++;
+                    setTimeout(renderStage2, 800);
+                } else {
+                    playSound('wrong');
+                    showToast("ลำดับยังไม่ถูกต้อง ลองใหม่อีกครั้งนะ ❌", "error");
+                    state.stage2Selected = [];
+                    setTimeout(renderStage2, 500);
+                }
+            } else {
+                renderStage2();
+            }
+        }
+
+        function resetStage2Selection() {
+            playSound('click');
+            state.stage2Selected = [];
+            renderStage2();
+        }
+
+        function renderStage3() {
+            const qIdx = state.stageQuestionIndex;
+            if (qIdx >= stage3Questions.length) {
+                stageCompleted();
+                return;
+            }
+
+            document.getElementById('game-progress-indicator').innerText = `ข้อ ${qIdx + 1}/3`;
+            const q = stage3Questions[qIdx];
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+            let html = `
+                <div class="text-center mb-6">
+                    <div class="bg-purple-50 border border-purple-200 p-4 rounded-2xl text-slate-700 text-sm md:text-base font-medium max-w-xl mx-auto shadow-sm mb-4">
+                        ${q.scenario}
+                    </div>
+                    <h4 class="font-bold text-indigo-700 text-base md:text-lg">${q.question}</h4>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-lg mx-auto">
+            `;
+
+            shuffledOptions.forEach(opt => {
+                html += `
+                    <button onclick="checkStage3Answer(${opt.correct})" class="bg-white hover:bg-purple-50 border-2 border-slate-200 hover:border-purple-400 p-4 rounded-2xl text-slate-700 font-semibold shadow-sm transition active:scale-95 flex flex-col items-center justify-center text-center group">
+                        <span class="text-4xl mb-2 group-hover:scale-110 transition">${opt.icon}</span>
+                        <span class="text-xs md:text-sm">${opt.text}</span>
+                    </button>
+                `;
+            });
+
+            html += `</div>`;
+            document.getElementById('game-arena').innerHTML = html;
+        }
+
+        function checkStage3Answer(isCorrect) {
+            if (isCorrect) {
+                playSound('correct');
+                showToast("เลือกเครื่องมือถูกต้อง เก่งมาก! (+1 ดาว) ⭐", "success");
+                state.stars += 1;
+                updateStarDisplay();
+                state.stageQuestionIndex++;
+                setTimeout(renderStage3, 600);
+            } else {
+                playSound('wrong');
+                showToast("เครื่องมือนี้ยังไม่เหมาะสม ลองใหม่อีกครั้งนะ ❌", "error");
+            }
+        }
+
+        function initRobotStage() {
+            state.robotPos = { r: 0, c: 0 };
+            state.robotTrash = { r: 1, c: 1 };
+            state.robotGoal = { r: 2, c: 2 };
+            state.robotCommands = [];
+            state.robotRunning = false;
+        }
+
+        function renderStage4() {
+            document.getElementById('game-progress-indicator').innerText = `ภารกิจหุ่นยนต์ 🤖`;
+
+            // Render 3x3 Grid
+            let gridHtml = `<div class="grid grid-cols-3 gap-2 w-48 h-48 mx-auto bg-slate-100 p-2 rounded-2xl border-2 border-slate-300 shadow-inner">`;
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+                    let cellContent = "";
+                    let cellBg = "bg-white border border-slate-200";
+
+                    if (state.robotPos.r === r && state.robotPos.c === c) {
+                        cellContent = "🤖";
+                        cellBg = "bg-sky-100 border-2 border-sky-400";
+                    } else if (state.robotTrash.r === r && state.robotTrash.c === c) {
+                        cellContent = "🧃";
+                        cellBg = "bg-amber-50 border border-amber-200";
+                    } else if (state.robotGoal.r === r && state.robotGoal.c === c) {
+                        cellContent = "🗑️";
+                        cellBg = "bg-emerald-50 border border-emerald-200";
+                    }
+
+                    gridHtml += `
+                        <div class="${cellBg} rounded-xl flex items-center justify-center text-2xl shadow-sm transition-all duration-300">
+                            ${cellContent}
+                        </div>
+                    `;
+                }
+            }
+            gridHtml += `</div>`;
+
+            // Command Stack View
+            let stackHtml = `<div class="flex justify-center space-x-2 my-4 min-h-[44px]">`;
+            for (let i = 0; i < 4; i++) {
+                let cmd = state.robotCommands[i];
+                let icon = cmd ? getCmdIcon(cmd) : "⚪";
+                stackHtml += `
+                    <div class="w-11 h-11 bg-slate-100 border border-slate-300 rounded-xl flex items-center justify-center text-lg shadow-sm">
+                        ${icon}
+                    </div>
+                `;
+            }
+            stackHtml += `</div>`;
+
+            let html = `
+                <div class="text-center mb-3">
+                    <h4 class="font-bold text-indigo-700 text-sm md:text-base mb-1">พาน้องหุ่นยนต์ 🤖 ไปเก็บขยะ 🧃 ลงถังขยะ 🗑️</h4>
+                    <p class="text-slate-500 text-xs">วางแผนคำสั่งลูกศรสูงสุด 4 ขั้นตอน</p>
+                </div>
+
+                ${gridHtml}
+
+                <div class="mt-3">
+                    <p class="text-xs font-semibold text-slate-500 text-center mb-1">รายการคำสั่ง (${state.robotCommands.length}/4):</p>
+                    ${stackHtml}
+                </div>
+
+                <!-- Controls Panel -->
+                <div class="flex justify-center space-x-2 mb-4">
+                    <button onclick="addRobotCmd('UP')" class="w-11 h-11 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl shadow font-bold text-base active:scale-95 transition">⬆️</button>
+                    <button onclick="addRobotCmd('DOWN')" class="w-11 h-11 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl shadow font-bold text-base active:scale-95 transition">⬇️</button>
+                    <button onclick="addRobotCmd('LEFT')" class="w-11 h-11 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl shadow font-bold text-base active:scale-95 transition">⬅️</button>
+                    <button onclick="addRobotCmd('RIGHT')" class="w-11 h-11 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl shadow font-bold text-base active:scale-95 transition">➡️</button>
+                    <button onclick="clearRobotCmd()" class="px-3 h-11 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl shadow text-xs font-semibold active:scale-95 transition">❌ ลบ</button>
+                </div>
+
+                <div class="flex justify-center">
+                    <button onclick="runRobotProgram()" class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition active:scale-95 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-play"></i><span>🚀 เล่นคำสั่งตามที่วางแผน!</span>
+                    </button>
+                </div>
+            `;
+            document.getElementById('game-arena').innerHTML = html;
+        }
+
+        function getCmdIcon(cmd) {
+            if (cmd === 'UP') return '⬆️';
+            if (cmd === 'DOWN') return '⬇️';
+            if (cmd === 'LEFT') return '⬅️';
+            if (cmd === 'RIGHT') return '➡️';
+            return '';
+        }
+
+        function addRobotCmd(cmd) {
+            if (state.robotRunning) return;
+            if (state.robotCommands.length < 4) {
+                playSound('click');
+                state.robotCommands.push(cmd);
+                renderStage4();
+            } else {
+                showToast("ใส่คำสั่งได้สูงสุด 4 ขั้นตอนครับ", "info");
+            }
+        }
+
+        function clearRobotCmd() {
+            if (state.robotRunning) return;
+            playSound('click');
+            state.robotCommands = [];
+            state.robotPos = { r: 0, c: 0 };
+            renderStage4();
+        }
+
+        function runRobotProgram() {
+            if (state.robotRunning || state.robotCommands.length === 0) return;
+            state.robotRunning = true;
+            playSound('click');
+
+            let stepIdx = 0;
+            let currentR = 0;
+            let currentC = 0;
+            state.robotPos = { r: currentR, c: currentC };
+            renderStage4();
+
+            let interval = setInterval(() => {
+                if (stepIdx < state.robotCommands.length) {
+                    let cmd = state.robotCommands[stepIdx];
+                    if (cmd === 'UP' && currentR > 0) currentR--;
+                    else if (cmd === 'DOWN' && currentR < 2) currentR++;
+                    else if (cmd === 'LEFT' && currentC > 0) currentC--;
+                    else if (cmd === 'RIGHT' && currentC < 2) currentC++;
+
+                    state.robotPos = { r: currentR, c: currentC };
+                    playSound('click');
+                    renderStage4();
+                    stepIdx++;
+                } else {
+                    clearInterval(interval);
+                    state.robotRunning = false;
+
+                    // Check win condition: Robot reaches Goal (2,2)
+                    if (state.robotPos.r === 2 && state.robotPos.c === 2) {
+                        playSound('win');
+                        showToast("เยี่ยมมาก! พาหุ่นยนต์ทำภารกิจสำเร็จ (+3 ดาว) ⭐", "success");
+                        state.stars += 3;
+                        updateStarDisplay();
+                        setTimeout(() => {
+                            stageCompleted();
+                        }, 1000);
+                    } else {
+                        playSound('wrong');
+                        showToast("ยังไม่ถึงเป้าหมาย ลองวางแผนคำสั่งใหม่อีกครั้งนะ ❌", "error");
+                        state.robotPos = { r: 0, c: 0 };
+                        renderStage4();
+                    }
+                }
+            }, 600);
+        }
+
+        function stageCompleted() {
+            playSound('win');
+            hideAllScreens();
+            document.getElementById('screen-summary').classList.remove('hidden');
+            document.getElementById('final-star-count').innerText = `⭐ ${state.stars} ดาว`;
+        }
+
+        function generateCertificate() {
+            const nameInput = document.getElementById('student-name-input').value.trim();
+            if (!nameInput) {
+                showToast("กรุณากรอกชื่อ-นามสกุลก่อนสร้างเกียรติบัตร", "error");
+                return;
+            }
+            playSound('correct');
+            document.getElementById('cert-student-name').innerText = nameInput;
+            document.getElementById('cert-star-count').innerText = `${state.stars} ดาว`;
+            document.getElementById('certificate-modal').classList.remove('hidden');
+        }
+
+        function closeCertificate() {
+            playSound('click');
+            document.getElementById('certificate-modal').classList.add('hidden');
+        }
+
+        function restartAll() {
+            playSound('click');
+            state.stars = 0;
+            state.currentLesson = 1;
+            updateStarDisplay();
+            goToHome();
+        }
+
+        // Initialize App on Load
+        window.onload = function() {
+            updateStarDisplay();
+            goToHome();
+        };
+    </script>
+</body>
+</html>
